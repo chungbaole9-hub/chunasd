@@ -11,6 +11,7 @@ cron.schedule('0 3 * * *', () => {
 const CHANNEL_ID = "1543140705206276158";
 const MIN_RANDOM_NUM = 1;
 const MAX_RANDOM_NUM = 10000;
+const MAX_MESSAGES = 1000; // Giới hạn tối đa 1000 tin nhắn
 
 async function getTokens() {
     let tokens = [];
@@ -44,12 +45,15 @@ async function startBot(token, index) {
             }
             console.log(`[Acc ${index + 1}] Bắt đầu spam số ngẫu nhiên vào kênh: ${channel.name}`);
 
-            while (true) {
+            let sentCount = 0; // Biến đếm số tin nhắn đã gửi thành công
+
+            while (sentCount < MAX_MESSAGES) {
                 const numToSend = getRandomInt(MIN_RANDOM_NUM, MAX_RANDOM_NUM);
                 
                 try {
                     await channel.send(String(numToSend));
-                    console.log(`[Acc ${index + 1}] Đã gửi số ngẫu nhiên: ${numToSend}`);
+                    sentCount++;
+                    console.log(`[Acc ${index + 1}] Đã gửi số ngẫu nhiên: ${numToSend} (${sentCount}/${MAX_MESSAGES})`);
                 } catch (err) {
                     if (err.status === 429 || (err.message && err.message.includes('rate limit'))) {
                         const retryAfter = err.retryAfter ? err.retryAfter * 1000 : 5000;
@@ -64,7 +68,12 @@ async function startBot(token, index) {
                     }
                 }
 
-                // Tăng thời gian delay ngẫu nhiên an toàn hơn (15 đến 30 giây)
+                if (sentCount >= MAX_MESSAGES) {
+                    console.log(`[Acc ${index + 1}] Đã hoàn thành gửi đủ ${MAX_MESSAGES} tin nhắn. Dừng spam!`);
+                    break;
+                }
+
+                // Thời gian delay ngẫu nhiên an toàn (15 đến 30 giây)
                 const delay = getRandomFloat(15, 30);
                 await new Promise(resolve => setTimeout(resolve, delay * 1000));
             }
