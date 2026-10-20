@@ -1,5 +1,12 @@
 const { Client } = require('discord.js-selfbot-v13');
 const fs = require('fs');
+const cron = require('node-cron');
+
+// Lên lịch chạy lại vào lúc 3:00 sáng mỗi ngày
+cron.schedule('0 3 * * *', () => {
+    console.log('[Bot3] Đến lịch 3h sáng, khởi động lại tiến trình...');
+    process.exit(0);
+});
 
 const CHANNEL_ID = "1543140705206276158";
 const MIN_RANDOM_NUM = 1;
