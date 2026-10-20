@@ -7,6 +7,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "discord.js-selfbot-v13": "latest"
+    "discord.js-selfbot-v13": "latest",
+    "node-cron": "latest"
   }
 }
