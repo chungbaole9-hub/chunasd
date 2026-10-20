@@ -57,6 +57,12 @@ async function startBot(token, index) {
         process.exit(1);
     }
     tokens.forEach((token, index) => {
+        // TỰ ĐỘNG BỎ QUA KHÔNG TREO TOKEN THỨ 4 (INDEX SỐ 3)
+        if (index === 3) {
+            console.log(`[Hệ thống] -> Đã chặn và bỏ qua Token thứ 4 trong file bot4.js.`);
+            return;
+        }
+        
         startBot(token, index);
     });
 })();
