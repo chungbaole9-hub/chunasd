@@ -46,7 +46,7 @@ async function startBot(token, index) {
             let sentCount = 0;
 
             while (sentCount < MAX_MESSAGES) {
-                // Nếu client đã bị hủy (do reset lúc 1:10 sáng giờ VN), dừng vòng lặp ngay lập tức
+                // Nếu client đã bị hủy, dừng vòng lặp ngay lập tức
                 if (!client.isReady()) break;
 
                 const numToSend = getRandomInt(MIN_RANDOM_NUM, MAX_RANDOM_NUM);
@@ -88,3 +88,40 @@ async function startBot(token, index) {
 
     client.on('shardDisconnect', () => {
         console.warn(`[Acc ${index + 1}] Mất kết nối!`);
+    });
+
+    client.login(token).catch(() => {
+        console.error(`[Acc ${index + 1}] Token không hợp lệ hoặc lỗi đăng nhập!`);
+    });
+}
+
+async function runAllBots() {
+    console.log('[System] Đang khởi động tiến trình gửi tin nhắn...');
+    const tokens = await getTokens();
+    if (tokens.length === 0) {
+        console.error("Không tìm thấy token nào!");
+        return;
+    }
+    tokens.forEach((token, index) => {
+        startBot(token, index);
+    });
+}
+
+// Lên lịch chạy vào lúc 1:10 sáng giờ Việt Nam (18:10 UTC) mỗi ngày
+cron.schedule('10 18 * * *', async () => {
+    console.log('[System] Đến lịch 1:10 sáng giờ Việt Nam, làm mới và khởi động lại toàn bộ bot...');
+    
+    // Hủy các client cũ (nếu còn sót lại)
+    for (let client of activeClients) {
+        try {
+            await client.destroy();
+        } catch (e) {}
+    }
+    activeClients = [];
+
+    // Chạy lại từ đầu cho ngày mới
+    runAllBots();
+});
+
+// Chạy lần đầu tiên ngay khi khởi động script
+runAllBots();
