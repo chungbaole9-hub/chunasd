@@ -1,7 +1,6 @@
 const http = require('http');
 const { spawn } = require('child_process');
 
-// 1. Tạo Server HTTP nhỏ để Render giữ ứng dụng luôn sống (Online)
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
@@ -13,15 +12,13 @@ server.listen(PORT, () => {
     console.log(`[+] HTTP Server đã khởi chạy thành công trên cổng ${PORT}`);
 });
 
-// 2. Chạy tự động 4 file script với tên chuẩn không khoảng trắng
+// Chỉ chạy voice_manager và bot3 (spam tin nhắn)
 const scripts = [
-    'bot1.js',
-    'bot2.js',
-    'bot3.js',
-    'bot4.js'
+    'voice_manager.js',
+    'bot3.js'
 ];
 
-console.log('>>> Bắt đầu kích hoạt 4 file script Discord ngầm...\n');
+console.log('>>> Bắt đầu kích hoạt hệ thống bot ngầm...\n');
 
 scripts.forEach((file) => {
     const child = spawn('node', [file], { stdio: 'inherit', shell: true });
