@@ -1,6 +1,7 @@
 const http = require('http');
 const { spawn } = require('child_process');
 
+// 1. Tạo Server HTTP nhỏ để Render giữ ứng dụng luôn sống (Online)
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
@@ -12,13 +13,12 @@ server.listen(PORT, () => {
     console.log(`[+] HTTP Server đã khởi chạy thành công trên cổng ${PORT}`);
 });
 
-// Chỉ chạy voice_manager và bot3 (spam tin nhắn)
+// 2. Chỉ chạy duy nhất bot2.js
 const scripts = [
-    'voice_manager.js',
-    'bot3.js'
+    'bot2.js'
 ];
 
-console.log('>>> Bắt đầu kích hoạt hệ thống bot ngầm...\n');
+console.log('>>> Bắt đầu kích hoạt bot2 ngầm...\n');
 
 scripts.forEach((file) => {
     const child = spawn('node', [file], { stdio: 'inherit', shell: true });
