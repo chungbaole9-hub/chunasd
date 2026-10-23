@@ -4,7 +4,7 @@
   "description": "Tích hợp HTTP Server để giữ Bot hoạt động 24/7 trên Render Web Service",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node --expose-gc server.js"
   },
   "dependencies": {
     "discord.js-selfbot-v13": "latest",
