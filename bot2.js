@@ -13,13 +13,14 @@ async function getTokens() {
     return tokens;
 }
 
-// Hàm chung để kết nối một tài khoản vào một phòng voice chỉ định
 async function connectVoice(token, index, channelId, botName) {
     const client = new Client({ checkUpdate: false });
 
     async function joinVoice() {
         try {
             const channel = await client.channels.fetch(channelId);
+            if (!channel) return;
+
             client.ws.broadcast({
                 op: 4,
                 d: {
@@ -37,13 +38,17 @@ async function connectVoice(token, index, channelId, botName) {
 
     client.on('ready', () => {
         console.log(`[${botName} - Acc ${index + 1}] Đã đăng nhập: ${client.user.tag}`);
-        joinVoice();
-        setInterval(joinVoice, 15 * 60 * 1000); // Giữ kết nối mỗi 15 phút
+        joinVoice(); // Chỉ gọi 1 lần duy nhất khi bot đã sẵn sàng
     });
 
+    // Tự động kết nối lại khi mất mạng / nghẽn mạng
     client.on('shardDisconnect', () => {
         console.warn(`[${botName} - Acc ${index + 1}] Mất kết nối! Đang thử vào lại sau 5s...`);
         setTimeout(joinVoice, 5000);
+    });
+
+    client.on('shardReconnecting', () => {
+        console.log(`[${botName} - Acc ${index + 1}] Đang kết nối lại Websocket...`);
     });
 
     client.login(token).catch(() => {
