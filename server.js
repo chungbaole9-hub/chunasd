@@ -31,11 +31,10 @@ function cleanMemory() {
 
 setInterval(cleanMemory, SIX_HOURS);
 
-// 3. Danh sách các file bot cần chạy ngầm
-// Ghi chú: Hãy đảm bảo các file trong danh sách này ĐÃ ĐƯỢC PUSH LÊN GITHUB
+// 3. Danh sách các file bot cần chạy ngầm (Đã bật cả bot2 và bot3)
 const scripts = [
-    'bot2.js'
-    // 'bot3.js' // Mở comment nếu bạn đã push bot3.js lên GitHub
+    'bot2.js',
+    'bot3.js'
 ];
 
 console.log('>>> Bắt đầu kích hoạt tiến trình bot ngầm...\n');
